@@ -4,8 +4,10 @@ import os
 import pkg_resources
 
 
+oauth2client_version = pkg_resources.get_distribution('oauth2client').version
+
 def expect_version(expected):
-    if pkg_resources.get_distribution('oauth2client').version != expected:
+    if oauth2client_version != expected:
         raise RuntimeError('Run this with oauth2client %s.' % expected)
 
 

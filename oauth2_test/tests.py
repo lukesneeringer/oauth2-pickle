@@ -11,6 +11,7 @@ import pkg_resources
 from oauth2client.client import OAuth2Credentials
 from oauth2client.service_account import ServiceAccountCredentials
 
+from oauth2_test import serializers
 from oauth2_test import utils
 
 
@@ -54,9 +55,15 @@ class ServiceAccountRestTest(unittest.TestCase):
         self.assertEqual(sac._user_agent, 'user-agent/1.0')
         self.assertEqual(sac._kwargs, {})
 
+    @unittest.expectedFailure
     def test_read_1_4_12_sac(self):
         with open('%s/service-acct-1.4.12.pickle' % utils.target, 'rb') as f:
             sac = pickle.loads(f.read())
+        self._verify_sac(sac)
+
+    def test_read_1_4_12_sac_with_custom_unpickler(self):
+        with open('%s/service-acct-1.4.12.pickle' % utils.target, 'rb') as f:
+            sac = serializers.OAuth2Unpickler(f).load()
         self._verify_sac(sac)
 
     def test_read_4_0_0_sac(self):
