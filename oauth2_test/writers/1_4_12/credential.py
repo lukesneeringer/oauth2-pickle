@@ -10,9 +10,9 @@ from oauth2client.client import OAuth2Credentials
 
 
 # Sanity check: It is easy to be confused about what environment you
-# are in; if this is not being done with oauth2client 4.0.0, complain.
-if pkg_resources.get_distribution('oauth2client').version != '4.0.0':
-    raise RuntimeError('Run this with oauth2client 4.0.0')
+# are in; if this is not being done with oauth2client 1.4.12, complain.
+if pkg_resources.get_distribution('oauth2client').version != '1.4.12':
+    raise RuntimeError('Run this with oauth2client 1.4.12')
 
 # These are copied from `test_file.py` in oauth2client 1.4.12.
 access_token = 'foo'
@@ -31,6 +31,6 @@ credentials = OAuth2Credentials(
 
 # Serialize the credentials and write them to a file.
 serialized = pickle.dumps(credentials)
-whereami = os.path.realpath(os.path.dirname(__file__))
-with open('%s/credential-4.0.0.pickle' % whereami, 'wb') as f:
+target = os.environ['OAUTH2_TEST_DATA']
+with open('%s/credential-1.4.12.pickle' % target, 'wb') as f:
     f.write(serialized)

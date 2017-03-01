@@ -20,8 +20,8 @@ print('These tests are running against Python {p}, oauth2client {o}'.format(
 
 
 class CredentialsReadTest(unittest.TestCase):
-    whereami = os.path.realpath(os.path.dirname(__file__))
-
+    data_dir = os.environ['OAUTH2_TEST_DATA']
+    
     def _verify_credential(self, credential):
         self.assertIsInstance(credential, OAuth2Credentials)
         self.assertEqual(credential.access_token, 'foo')
@@ -33,11 +33,11 @@ class CredentialsReadTest(unittest.TestCase):
         self.assertEqual(credential.user_agent, 'refresh_checker/1.0')
 
     def test_read_1_4_12_credentials(self):
-        with open('%s/credential-1.4.12.pickle' % self.whereami, 'rb') as f:
+        with open('%s/credential-1.4.12.pickle' % self.data_dir, 'rb') as f:
             credential = pickle.loads(f.read())
         self._verify_credential(credential)
 
     def test_read_4_0_0_credentials(self):
-        with open('%s/credential-4.0.0.pickle' % self.whereami, 'rb') as f:
+        with open('%s/credential-4.0.0.pickle' % self.data_dir, 'rb') as f:
             credential = pickle.loads(f.read())
         self._verify_credential(credential)
