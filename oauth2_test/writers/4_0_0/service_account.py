@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import pickle
 
-from oauth2client.service_account import _ServiceAccountCredentials
+from oauth2client.service_account import ServiceAccountCredentials
 
 from oauth2_test import utils
 
@@ -11,7 +11,7 @@ from oauth2_test import utils
 utils.expect_version('4.0.0')
 
 # Create a _ServiceAccountCredentials object.
-sac = _ServiceAccountCredentials(
+sac = ServiceAccountCredentials(
     service_account_email='service@google.com',
     signer=None,
     scopes=['SCOPE1', 'SCOPE2', 'SCOPE3'],

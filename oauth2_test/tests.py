@@ -57,9 +57,9 @@ class ServiceAccountRestTest(unittest.TestCase):
     def test_read_1_4_12_sac(self):
         with open('%s/service-acct-1.4.12.pickle' % utils.target, 'rb') as f:
             sac = pickle.loads(f.read())
-        self._verify_sac(self, sac)
+        self._verify_sac(sac)
 
     def test_read_4_0_0_sac(self):
         with open('%s/service-acct-4.0.0.pickle' % utils.target, 'rb') as f:
             sac = pickle.loads(f.read())
-        self._verify_sac(self, sac)
+        self._verify_sac(sac)
