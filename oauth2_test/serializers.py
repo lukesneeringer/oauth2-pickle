@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import pickle
+import sys
 
 
 class OAuth2Unpickler(pickle.Unpickler):
@@ -11,6 +12,16 @@ class OAuth2Unpickler(pickle.Unpickler):
     It also knows how to unpickle objects written by oauth2client 1.4.12
     (either the original or the _plus variane) in oauth2client 4.0.0
     """
+    def load_global(self):
+        """Run the Python 3 `load_global` implementation.
+
+        This makes `find_class` work, even on Python 2.
+        """
+        module = self.readline()[:-1].decode('utf8')
+        name = self.readline()[:-1].decode('utf8')
+        class_ = self.find_class(module, name)
+        self.append(class_)
+
     def find_class(self, module, name):
         """Return the appropriate class.
 
@@ -27,4 +38,8 @@ class OAuth2Unpickler(pickle.Unpickler):
                             'ServiceAccountCredentials')
 
         # Run the base implementation.
-        return super(OAuth2Unpickler, self).find_class(module, name)
+        #
+        # This is copied, rather than superclass-refereneced, so that
+        # it will work on Python 2.
+        __import__(module, level=0)
+        return getattr(sys.modules[module], name)
