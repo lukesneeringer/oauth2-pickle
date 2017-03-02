@@ -8,6 +8,10 @@ import unittest
 
 import pkg_resources
 
+import pytz
+
+import six
+
 from oauth2client.client import OAuth2Credentials
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -31,17 +35,37 @@ class CredentialsReadTest(unittest.TestCase):
         self.assertEqual(credential.client_secret, 'cOuDdkfjxxnv+')
         self.assertEqual(credential.refresh_token, '1/0/a.df219fjls0')
         self.assertIsInstance(credential.token_expiry, datetime)
+        self.assertEqual(credential.token_expiry.year, 2012)
+        self.assertEqual(credential.token_expiry.month, 4)
+        self.assertEqual(credential.token_expiry.day, 21)
+        self.assertEqual(credential.token_expiry.tzinfo, pytz.UTC)
         self.assertIn('google.com', credential.token_uri)
         self.assertEqual(credential.user_agent, 'refresh_checker/1.0')
 
-    def test_read_1_4_12_credentials(self):
-        with open('%s/credential-1.4.12.pickle' % utils.target, 'rb') as f:
-            credential = pickle.loads(f.read())
+    def test_read_1_4_12_py27_credentials(self):
+        filename = '%s/credential-1.4.12-py27.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            credential = serializers.OAuth2Unpickler(f).load()
         self._verify_credential(credential)
 
-    def test_read_4_0_0_credentials(self):
-        with open('%s/credential-4.0.0.pickle' % utils.target, 'rb') as f:
-            credential = pickle.loads(f.read())
+    @unittest.skipIf(six.PY2, 'Python 2 only reads Python 2 pickles.')
+    def test_read_1_4_12_py36_credentials(self):
+        filename = '%s/credential-1.4.12-py36.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            credential = pickle.load(f)
+        self._verify_credential(credential)
+
+    def test_read_4_0_0_py27_credentials(self):
+        filename = '%s/credential-4.0.0-py27.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            credential = serializers.OAuth2Unpickler(f).load()
+        self._verify_credential(credential)
+
+    @unittest.skipIf(six.PY2, 'Python 2 only reads Python 2 pickles.')
+    def test_read_4_0_0_py36_credentials(self):
+        filename = '%s/credential-4.0.0-py36.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            credential = pickle.load(f)
         self._verify_credential(credential)
 
 
@@ -56,17 +80,55 @@ class ServiceAccountRestTest(unittest.TestCase):
         self.assertEqual(sac._kwargs, {})
 
     @unittest.expectedFailure
-    def test_read_1_4_12_sac(self):
-        with open('%s/service-acct-1.4.12.pickle' % utils.target, 'rb') as f:
+    def test_read_1_4_12_py27_sac_without_custom_unpickler(self):
+        filename = '%s/service-acct-1.4.12-py27.pickle' % utils.target
+        with open(filename, 'rb') as f:
             sac = pickle.loads(f.read())
         self._verify_sac(sac)
 
-    def test_read_1_4_12_sac_with_custom_unpickler(self):
-        with open('%s/service-acct-1.4.12.pickle' % utils.target, 'rb') as f:
+    @unittest.expectedFailure
+    @unittest.skipIf(six.PY2, 'Python 2 only reads Python 2 pickles.')
+    def test_read_1_4_12_py36_sac_without_custom_unpickler(self):
+        filename = '%s/service-acct-1.4.12-py36.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            sac = pickle.load(f)
+        self._verify_sac(sac)
+
+    def test_read_1_4_12_py27_sac_with_custom_unpickler(self):
+        filename = '%s/service-acct-1.4.12-py27.pickle' % utils.target
+        with open(filename, 'rb') as f:
             sac = serializers.OAuth2Unpickler(f).load()
         self._verify_sac(sac)
 
-    def test_read_4_0_0_sac(self):
-        with open('%s/service-acct-4.0.0.pickle' % utils.target, 'rb') as f:
-            sac = pickle.loads(f.read())
+    @unittest.skipIf(six.PY2, 'Python 2 only reads Python 2 pickles.')
+    def test_read_1_4_12_py36_sac_with_custom_unpickler(self):
+        filename = '%s/service-acct-1.4.12-py36.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            sac = serializers.OAuth2Unpickler(f).load()
+        self._verify_sac(sac)
+
+    def test_read_4_0_0_py27_sac_without_custom_unpickler(self):
+        filename = '%s/service-acct-4.0.0-py27.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            sac = pickle.load(f)
+        self._verify_sac(sac)
+
+    @unittest.skipIf(six.PY2, 'Python 2 only reads Python 2 pickles.')
+    def test_read_4_0_0_py36_sac_without_custom_unpickler(self):
+        filename = '%s/service-acct-4.0.0-py36.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            sac = pickle.load(f)
+        self._verify_sac(sac)
+
+    def test_read_4_0_0_py27_sac_with_custom_unpickler(self):
+        filename = '%s/service-acct-4.0.0-py27.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            sac = serializers.OAuth2Unpickler(f).load()
+        self._verify_sac(sac)
+
+    @unittest.skipIf(six.PY2, 'Python 2 only reads Python 2 pickles.')
+    def test_read_4_0_0_py36_sac_with_custom_unpickler(self):
+        filename = '%s/service-acct-4.0.0-py36.pickle' % utils.target
+        with open(filename, 'rb') as f:
+            sac = serializers.OAuth2Unpickler(f).load()
         self._verify_sac(sac)

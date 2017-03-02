@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import pickle
+import sys
 
 from oauth2client.service_account import _ServiceAccountCredentials
 
@@ -56,5 +57,10 @@ sac = _ServiceAccountCredentials(
 )
 
 # Write the pickle to disk.
-with open('%s/service-acct-1.4.12.pickle' % utils.target, 'wb') as f:
+filename = '{target}/service-acct-1.4.12-py{py_major}{py_minor}.pickle'.format(
+    py_major=sys.version_info[0],
+    py_minor=sys.version_info[1],
+    target=utils.target,
+)
+with open(filename, 'wb') as f:
     f.write(pickle.dumps(sac))
