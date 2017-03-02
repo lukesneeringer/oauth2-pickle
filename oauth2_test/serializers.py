@@ -29,22 +29,12 @@ class OAuth2Unpickler(Unpickler):
         as-is if decoding fails.
 
         This makes Python 2 datetime pickles correctly deserialize under
-        Python 3.
+        Python 3. Reference: http://bugs.python.org/issue22005
         """
         try:
             return value.decode(self.encoding, self.errors)
         except UnicodeDecodeError:
             return value
-
-    def load_global(self):
-        """Run the Python 3 `load_global` implementation.
-
-        This makes `find_class` work, even on Python 2.
-        """
-        module = self.readline()[:-1].decode('utf8')
-        name = self.readline()[:-1].decode('utf8')
-        class_ = self.find_class(module, name)
-        self.append(class_)
 
     def find_class(self, module, name):
         """Return the appropriate class.
@@ -73,3 +63,13 @@ class OAuth2Unpickler(Unpickler):
                 module = _compat_pickle.IMPORT_MAPPING[module]
         __import__(module, level=0)
         return getattr(sys.modules[module], name)
+
+    def load_global(self):
+        """Run the Python 3 `load_global` implementation.
+
+        This makes `find_class` work, even on Python 2.
+        """
+        module = self.readline()[:-1].decode('utf8')
+        name = self.readline()[:-1].decode('utf8')
+        class_ = self.find_class(module, name)
+        self.append(class_)
